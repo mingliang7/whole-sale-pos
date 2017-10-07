@@ -1,0 +1,142 @@
+<template name="printBillA5">
+    <div class="section-a5">
+        <div class="row hidden-print">
+            <div class="col-md-12">
+                <div class="pull-right">
+                    <span><button class="hidden-print btn printEnterBill bg-orange btn-flat margin"><i
+                            class="fa fa-print"></i> បោះពុម្ព</button></span>
+                    <span><a href="/pos/invoice"
+                             class="hidden-print btn btn-info btn-flat margin">ត្រលប់ក្រោយ</a></span>
+                </div>
+            </div>
+        </div>
+        <div class="section-a5-content">
+            {{#with company}}
+                <!--<h4><b>{{khName}}</b></h4>-->
+                <!--<div style="width: 50px; float: left;  height: 60px; border: 1px solid #cb2027;">-->
+
+                <!--</div>-->
+                <div style="text-align: center; margin-top: 30px;">
+                    <!--<img width="140px" height="100px" src="/logo/white-gold.png" alt="" style="margin-left: -140px; margin-top: -30px">-->
+                    <span
+                            style="font-weight: bold;font-size: 18px; ​font-family:'Khmer OS Muol Light'">{{khName}}</span>
+                    <br> <span><small>{{khAddress}} {{telephone}}</small></span>
+                </div>
+            {{/with}}
+            <br>
+            <div style="text-align: center">
+                <span style="font-weight: bold;font-size: 18px;"><u>វិក័យប័ត្រ</u></span>
+            </div>
+            <!--<p>-->
+            <!--<small>អត្រាប្តូរប្រាក់ៈ {{data.exchange}}</small>-->
+            <!--</p>-->
+            <table width="100%">
+                {{#with data.content}}
+                    <tr>
+                        <td><b>
+                            លេខវិក័យប័ត្រ</b></td>
+                        <td>: {{saleId}}</td>
+                        <td><b>ថ្ងៃទី</b></td>
+                        <td>: {{moFormat invoiceDate 'DD/MM/YYYY HH:mm:ss'}}</td>
+                    </tr>
+                    <tr>
+                        <!--<td><b>តំណាងលក់/Seller</b></td>-->
+                        <!--<td>: {{sale._rep.name}}</td>-->
+
+                    </tr>
+
+                    <tr>
+                        <td><b>អតិថិជន</b></td>
+                        <td>: {{sale.name }}</td>
+                        <td><b>អត្រាប្តូរប្រាក់</b></td>
+                        <td>: {{data.exchange}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>លេខទូរស័ព្ទ</b></td>
+                        <td>: {{sale.telephone}}</td>
+                        <td><b>Memo</b></td>
+                        <td>: {{des}}</td>
+                    </tr>
+                {{/with}}
+            </table>
+            <br>
+            <table border="1" width="100%"
+                   style="font-size: 12px; border-collapse:collapse; font-family: 'Khmer OS Battambang';">
+                <tr align="center"
+                    style="-webkit-print-color-adjust: exact; background-color: lightgrey !important; font-weight: bold; height: 20px;">
+                    <td>ល.រ​</td>
+                    <td> ឈ្មោះទំនិញ</td>
+                    <td> ចំនួន</td>
+                    <td> តម្លៃ</td>
+                    <td> បញ្ចុះតម្លៃ(%)</td>
+                    <td> សរុប</td>
+                </tr>
+                {{#with data.content}}
+                    {{#each items}}
+                        <tr>
+                            <td>{{no @index}}</td>
+                            <td>{{itemDoc.name}}</td>
+                            <td style="text-align: right">{{numFormat qty '0,0.00'}}</td>
+                            <td style="text-align: right">{{numFormat price '0,0.00'}}</td>
+                            <td style="text-align: right"></td>
+                            <td style="text-align: right">{{numFormat amount '0,0.00'}}</td>
+                        </tr>
+                    {{/each}}
+                    <tr>
+                        <td colspan="5" style="font-weight: bold;text-align: right">សរុប(ដុល្លារ):</td>
+                        <td style="font-weight: bold; text-align: right">{{numFormat totalUsd '0,0.00'}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" style="font-weight: bold;text-align: right">សរុប(បាត):</td>
+                        <td style="font-weight: bold; text-align: right">{{numFormat totalThb '0,0'}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" style="font-weight: bold;text-align: right">សរុប(រៀល):</td>
+                        <td style="font-weight: bold; text-align: right">{{numFormat totalKhr '0,0'}}</td>
+                    </tr>
+                    {{#if hasPayment paymentObj}}
+                        <tr align="right">
+                            <td colspan="5"><b>បានបង់</b>:</td>
+                            <td><b>{{numFormat paymentObj.paidAmount '0,0.00'}}</b> $</td>
+                        </tr>
+                        <tr align="right">
+                            <td colspan="5"><b>នៅសល់</b>:</td>
+                            <td><b>{{numFormat paymentObj.balanceAmount '0,0.00'}}</b> $</td>
+                        </tr>
+                    {{/if}}
+                {{/with}}
+            </table>
+            <br>
+            <div class="row">
+                <div class="col-md-12">
+                    <div style="height: 7px;"></div>
+                    <table width="100%" style="font-size: 16px;">
+                        <tr align="center">
+                            <td width="33%" style="font-size: 13px;">
+                                <b>អ្នកទិញ</b>
+                            </td>
+                            <td width="33%" style="font-size: 13px;">
+                                <b>អ្នកដឹកជញ្ជូន</b>
+                            </td>
+                            <td width="33%" style="font-size: 13px;">
+                                <b>អ្នកលក់ {{currentUser.username}}</b>
+                            </td>
+                        </tr>
+                        <tr align="center">
+                            <td width="33%" style="height: 100px;">
+                                _____________________________
+                            </td>
+                            <td width="33%">
+                                _____________________________
+                            </td>
+                            <td width="33%">
+                                _____________________________
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</template>
