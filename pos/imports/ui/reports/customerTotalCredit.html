@@ -109,7 +109,7 @@
         {{#with unpaidInvoices}}
             {{#each data}}
                 <tr>
-                    <td>{{_id}}</td>
+                    <td class="cursor-pointer invoiceId" data-invoiceId="{{_id}}"><a>{{_id}}</a></td>
                     <td>{{voucherId}}</td>
                     <td>{{moFormat invoiceDate 'DD/MM/YYYY'}}</td>
                     <td>{{moFormat dueDate 'DD/MM/YYYY'}}</td>

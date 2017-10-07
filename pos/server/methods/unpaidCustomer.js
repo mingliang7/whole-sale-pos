@@ -21,6 +21,7 @@ Meteor.methods({
                 $project: {
                     _id: 1,
                     customerId: 1,
+                    items: 1,
                     invoiceId: 1,
                     voucherId: 1,
                     invoiceDate: 1,
@@ -46,6 +47,7 @@ Meteor.methods({
                 $project: {
                     _id: 1,
                     voucherId: 1,
+                    items: 1,
                     status: 1,
                     invoiceDate: 1,
                     dueDate: 1,
@@ -62,6 +64,7 @@ Meteor.methods({
                     status: {$last: '$status'},
                     dueDate: {$last: '$dueDate'},
                     invoiceDoc: {$last: '$$ROOT'},
+                    items: {$last: '$items'},
                     lastPaymentDate: {$last: '$lastPaymentDate'},
                     dueAmount: {
                         $last: '$paymentDoc.dueAmount'
@@ -79,6 +82,7 @@ Meteor.methods({
                     _id: 1,
                     voucherId: 1,
                     invoice: {$concat: 'Invoice'},
+                    items: 1,
                     invoiceDoc: {
                         customerId: 1,
                         invoiceDate: 1
@@ -101,6 +105,7 @@ Meteor.methods({
             {
                 $group: {
                     _id: '$_id',
+                    items: {$last: '$items'},
                     invoice: {$last: '$invoice'},
                     voucherId: {$last: '$voucherId'},
                     invoiceDoc: {$last: '$invoiceDoc'},

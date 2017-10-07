@@ -116,6 +116,11 @@ invoiceDataTmpl.helpers({
     }
 });
 
+unpaidCustomerShow.events({
+    'click .invoiceId'(event,intance) {
+        console.log(this);
+    }
+});
 unpaidCustomerShow.helpers({
     unpaidInvoices(){
         return this;
