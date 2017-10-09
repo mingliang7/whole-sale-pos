@@ -11,7 +11,7 @@ module.exports = {
 
   meteor: {
     name: 'Pos',
-    path: '../pos-ls',
+    path: '../whole-sale-pos',
     servers: {
       one: {}
     },
