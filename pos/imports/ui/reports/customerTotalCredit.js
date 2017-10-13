@@ -5,7 +5,7 @@ import {renderTemplate} from '../../../../core/client/libs/render-template.js';
 //page
 import './customerTotalCredit.html';
 //import DI
-import  'printthis';
+import 'printthis';
 //import collection
 import {customerTermBalanceSchema} from '../../api/collections/reports/customerTermBalance';
 import {JSPanel} from '../../api/libs/jspanel';
@@ -17,7 +17,8 @@ let invoiceData = new ReactiveVar();
 //declare template
 let indexTmpl = Template.Pos_customerTotalCredit,
     invoiceDataTmpl = Template.customerTotalCreditData,
-    unpaidCustomerShow = Template.customerTotalCreditShow;
+    unpaidCustomerShow = Template.customerTotalCreditShow,
+    itemDetailShow = Template.unpaidItemDetailShow;
 Tracker.autorun(function () {
     if (paramsState.get()) {
         swal({
@@ -42,12 +43,12 @@ indexTmpl.onCreated(function () {
     paramsState.set(FlowRouter.query.params());
 });
 indexTmpl.helpers({
-    schema(){
+    schema() {
         return customerTermBalanceSchema;
     }
 });
 indexTmpl.events({
-    'click .print'(event, instance){
+    'click .print'(event, instance) {
         window.print();
     }
 });
@@ -59,7 +60,7 @@ invoiceDataTmpl.onDestroyed(function () {
     $('.sub-header').removeClass('rpt rpt-header');
 });
 invoiceDataTmpl.events({
-    'click .goto-unpaid'(event, instace){
+    'click .goto-unpaid'(event, instace) {
         // let path = `/pos/report/termCustomerBalance?branchId=${Session.get('currentBranch')}&customer=${this.customerDoc._id}`;
         // FlowRouter.go(path);
         let date = FlowRouter.query.get('date');
@@ -72,17 +73,17 @@ invoiceDataTmpl.events({
 
 });
 invoiceDataTmpl.helpers({
-    company(){
+    company() {
         let doc = Session.get('currentUserStockAndAccountMappingDoc');
         return doc.company;
     },
-    data(){
+    data() {
         if (invoiceData.get()) {
             return invoiceData.get();
         }
     },
 
-    displayField(col){
+    displayField(col) {
         let data = '';
         this.displayFields.forEach(function (obj) {
             if (obj.field == 'amountDue') {
@@ -93,7 +94,7 @@ invoiceDataTmpl.helpers({
         });
         return data;
     },
-    getTotal(dueAmount, paidAmount, total, customerName){
+    getTotal(dueAmount, paidAmount, total, customerName) {
         let string = '';
         let fieldLength = this.displayFields.length - 5;
         for (let i = 0; i < fieldLength; i++) {
@@ -102,7 +103,7 @@ invoiceDataTmpl.helpers({
         string += `<td><u>Total ${_.capitalize(customerName)}:</u></td><td class="text-right"><u>${numeral(dueAmount).format('0,0.000')}</u></td><td class="text-right"><u>${numeral(paidAmount).format('0,0.000')}</u></td><td class="text-right"><u>${numeral(total).format('0,0.000')}</u></td>`;
         return string;
     },
-    getTotalFooter(total){
+    getTotalFooter(total) {
         let string = '';
         let fieldLength = this.displayFields.length - 2;
         for (let i = 0; i < fieldLength; i++) {
@@ -111,24 +112,38 @@ invoiceDataTmpl.helpers({
         string += `<td ><b>Total:</td></b><td style="border-top: 1px solid black;" class="text-right"><b>${numeral(total).format('0,0.000')}$</b></td>`;
         return string;
     },
-    capitalize(customerName){
+    capitalize(customerName) {
         return _.capitalize(customerName);
     }
 });
+unpaidCustomerShow.onCreated(function () {
+    createNewAlertify('itemDetailShow');
 
+});
 unpaidCustomerShow.events({
-    'click .invoiceId'(event,intance) {
-        console.log(this);
+    'click .invoiceId'(event, intance) {
+        Meteor.call('lookupItemsArr', this.items, (err, result) => {
+            if (!err) {
+                this.itemArr = result
+                alertify.itemDetailShow(fa('eye', 'Unpaid Invoices'), renderTemplate(itemDetailShow, this));
+            }
+        });
     }
 });
 unpaidCustomerShow.helpers({
-    unpaidInvoices(){
+    unpaidInvoices() {
         return this;
-    },
+    }
+});
+itemDetailShow.helpers({
+    mapItem(itemId, itemArr) {
+        let itemObj = itemArr.find(o => o._id === itemId);
+        return itemObj && itemObj.name || '';
+    }
 });
 AutoForm.hooks({
     customerTotalCreditReport: {
-        onSubmit(doc){
+        onSubmit(doc) {
             this.event.preventDefault();
             FlowRouter.query.unset();
             let params = {};
