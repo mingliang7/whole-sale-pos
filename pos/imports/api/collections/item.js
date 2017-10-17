@@ -99,7 +99,7 @@ Item.schema = new SimpleSchema({
         autoform: {
             type: 'inputmask',
             inputmaskOptions: function () {
-                return inputmaskOptions.currency({digits: 2});
+                return inputmaskOptions.currency({digits: 3});
             }
         }
     },
@@ -110,7 +110,7 @@ Item.schema = new SimpleSchema({
         autoform: {
             type: 'inputmask',
             inputmaskOptions: function () {
-                return inputmaskOptions.currency({digits: 2});
+                return inputmaskOptions.currency({digits: 3});
             }
         }
     },
@@ -121,7 +121,7 @@ Item.schema = new SimpleSchema({
         autoform: {
             type: 'inputmask',
             inputmaskOptions: function () {
-                return inputmaskOptions.currency({digits: 2});
+                return inputmaskOptions.currency({digits: 3});
             }
         }
     },
